@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "Alice Smith",
+    "membershipActive": true,
+    "registeredAt": "2023-01-15T10:30:00.000Z",
+    "borrowedBooks": [2]
+  },
+  {
+    "id": 2,
+    "name": "Bob Jones",
+    "membershipActive": false,
+    "registeredAt": "2022-11-20T14:15:00.000Z",
+    "borrowedBooks": []
+  }
+]
