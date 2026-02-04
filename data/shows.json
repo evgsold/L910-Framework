@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "title": "Grand Premiere",
+    "durationMinutes": 120,
+    "isSoldOut": false,
+    "premiereDate": "2023-01-20T18:00:00.000Z",
+    "performers": [1, 2]
+  },
+  {
+    "id": 2,
+    "title": "Magic Night",
+    "durationMinutes": 90,
+    "isSoldOut": true,
+    "premiereDate": "2023-02-14T19:30:00.000Z",
+    "performers": []
+  }
+]

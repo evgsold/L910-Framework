@@ -7,176 +7,178 @@ const PORT = 5001;
 
 app.use(jsonParser);
 
-// --- Books Routes ---
+// --- Artists Routes ---
 
-// GET /books
-app.get('/books', async (req, res) => {
-    const books = await readData('books.json');
-    res.json(books);
+// GET /artists
+app.get('/artists', async (req, res) => {
+    const artists = await readData('artists.json');
+    res.json(artists);
 });
 
-// GET /books/:id
-app.get('/books/:id', async (req, res) => {
-    const books = await readData('books.json');
-    const book = books.find(b => b.id === Number(req.params.id));
-    if (book) {
-        res.json(book);
+// GET /artists/:id
+app.get('/artists/:id', async (req, res) => {
+    const artists = await readData('artists.json');
+    const artist = artists.find(a => a.id === Number(req.params.id));
+    if (artist) {
+        res.json(artist);
     } else {
-        res.status(404).json({ error: 'Book not found' });
+        res.status(404).json({ error: 'Artist not found' });
     }
 });
 
-// POST /books
-app.post('/books', async (req, res) => {
-    const books = await readData('books.json');
-    const newBook = {
-        id: books.length > 0 ? Math.max(...books.map(b => b.id)) + 1 : 1,
-        title: req.body.title || 'Unknown Title',
-        author: req.body.author || 'Unknown Author',
-        isAvailable: typeof req.body.isAvailable === 'boolean' ? req.body.isAvailable : true,
-        publishedAt: req.body.publishedAt || new Date().toISOString(),
-        tags: Array.isArray(req.body.tags) ? req.body.tags : []
+// POST /artists
+app.post('/artists', async (req, res) => {
+    const artists = await readData('artists.json');
+    const newArtist = {
+        id: artists.length > 0 ? Math.max(...artists.map(a => a.id)) + 1 : 1,
+        name: req.body.name || 'Unknown Artist',
+        actType: req.body.actType || 'General',
+        isFullTime: typeof req.body.isFullTime === 'boolean' ? req.body.isFullTime : false,
+        hiredAt: req.body.hiredAt || new Date().toISOString(),
+        skills: Array.isArray(req.body.skills) ? req.body.skills : []
     };
-    books.push(newBook);
-    await writeData('books.json', books);
-    res.status(201).json(newBook);
+    artists.push(newArtist);
+    await writeData('artists.json', artists);
+    res.status(201).json(newArtist);
 });
 
-// PUT /books/:id
-app.put('/books/:id', async (req, res) => {
-    const books = await readData('books.json');
-    const index = books.findIndex(b => b.id === Number(req.params.id));
+// PUT /artists/:id
+app.put('/artists/:id', async (req, res) => {
+    const artists = await readData('artists.json');
+    const index = artists.findIndex(a => a.id === Number(req.params.id));
     
     if (index !== -1) {
-        const updatedBook = {
+        const updatedArtist = {
             id: Number(req.params.id),
-            title: req.body.title || books[index].title,
-            author: req.body.author || books[index].author,
-            isAvailable: typeof req.body.isAvailable === 'boolean' ? req.body.isAvailable : books[index].isAvailable,
-            publishedAt: req.body.publishedAt || books[index].publishedAt,
-            tags: Array.isArray(req.body.tags) ? req.body.tags : books[index].tags
+            name: req.body.name || artists[index].name,
+            actType: req.body.actType || artists[index].actType,
+            isFullTime: typeof req.body.isFullTime === 'boolean' ? req.body.isFullTime : artists[index].isFullTime,
+            hiredAt: req.body.hiredAt || artists[index].hiredAt,
+            skills: Array.isArray(req.body.skills) ? req.body.skills : artists[index].skills
         };
-        books[index] = updatedBook;
-        await writeData('books.json', books);
-        res.json(updatedBook);
+        artists[index] = updatedArtist;
+        await writeData('artists.json', artists);
+        res.json(updatedArtist);
     } else {
-        res.status(404).json({ error: 'Book not found' });
+        res.status(404).json({ error: 'Artist not found' });
     }
 });
 
-// PATCH /books/:id
-app.patch('/books/:id', async (req, res) => {
-    const books = await readData('books.json');
-    const index = books.findIndex(b => b.id === Number(req.params.id));
+// PATCH /artists/:id
+app.patch('/artists/:id', async (req, res) => {
+    const artists = await readData('artists.json');
+    const index = artists.findIndex(a => a.id === Number(req.params.id));
 
     if (index !== -1) {
-        const book = books[index];
+        const artist = artists[index];
         // Merge existing with new data
-        const updatedBook = { ...book, ...req.body, id: book.id }; // Ensure ID doesn't change
-        books[index] = updatedBook;
-        await writeData('books.json', books);
-        res.json(updatedBook);
+        const updatedArtist = { ...artist, ...req.body, id: artist.id }; // Ensure ID doesn't change
+        artists[index] = updatedArtist;
+        await writeData('artists.json', artists);
+        res.json(updatedArtist);
     } else {
-        res.status(404).json({ error: 'Book not found' });
+        res.status(404).json({ error: 'Artist not found' });
     }
 });
 
-// DELETE /books/:id
-app.delete('/books/:id', async (req, res) => {
-    let books = await readData('books.json');
-    const initialLength = books.length;
-    books = books.filter(b => b.id !== Number(req.params.id));
+// DELETE /artists/:id
+app.delete('/artists/:id', async (req, res) => {
+    let artists = await readData('artists.json');
+    const initialLength = artists.length;
+    artists = artists.filter(a => a.id !== Number(req.params.id));
     
-    if (books.length < initialLength) {
-        await writeData('books.json', books);
-        res.json({ message: 'Book deleted' });
+    if (artists.length < initialLength) {
+        await writeData('artists.json', artists);
+        res.json({ message: 'Artist deleted' });
     } else {
-        res.status(404).json({ error: 'Book not found' });
+        res.status(404).json({ error: 'Artist not found' });
     }
 });
 
-// --- Readers Routes ---
+// --- Shows Routes ---
 
-// GET /readers
-app.get('/readers', async (req, res) => {
-    const readers = await readData('readers.json');
-    res.json(readers);
+// GET /shows
+app.get('/shows', async (req, res) => {
+    const shows = await readData('shows.json');
+    res.json(shows);
 });
 
-// GET /readers/:id
-app.get('/readers/:id', async (req, res) => {
-    const readers = await readData('readers.json');
-    const reader = readers.find(r => r.id === Number(req.params.id));
-    if (reader) {
-        res.json(reader);
+// GET /shows/:id
+app.get('/shows/:id', async (req, res) => {
+    const shows = await readData('shows.json');
+    const show = shows.find(s => s.id === Number(req.params.id));
+    if (show) {
+        res.json(show);
     } else {
-        res.status(404).json({ error: 'Reader not found' });
+        res.status(404).json({ error: 'Show not found' });
     }
 });
 
-// POST /readers
-app.post('/readers', async (req, res) => {
-    const readers = await readData('readers.json');
-    const newReader = {
-        id: readers.length > 0 ? Math.max(...readers.map(r => r.id)) + 1 : 1,
-        name: req.body.name || 'Anonymous',
-        membershipActive: typeof req.body.membershipActive === 'boolean' ? req.body.membershipActive : false,
-        registeredAt: req.body.registeredAt || new Date().toISOString(),
-        borrowedBooks: Array.isArray(req.body.borrowedBooks) ? req.body.borrowedBooks : []
+// POST /shows
+app.post('/shows', async (req, res) => {
+    const shows = await readData('shows.json');
+    const newShow = {
+        id: shows.length > 0 ? Math.max(...shows.map(s => s.id)) + 1 : 1,
+        title: req.body.title || 'Untitled Show',
+        durationMinutes: typeof req.body.durationMinutes === 'number' ? req.body.durationMinutes : 60,
+        isSoldOut: typeof req.body.isSoldOut === 'boolean' ? req.body.isSoldOut : false,
+        premiereDate: req.body.premiereDate || new Date().toISOString(),
+        performers: Array.isArray(req.body.performers) ? req.body.performers : []
     };
-    readers.push(newReader);
-    await writeData('readers.json', readers);
-    res.status(201).json(newReader);
+    shows.push(newShow);
+    await writeData('shows.json', shows);
+    res.status(201).json(newShow);
 });
 
-// PUT /readers/:id
-app.put('/readers/:id', async (req, res) => {
-    const readers = await readData('readers.json');
-    const index = readers.findIndex(r => r.id === Number(req.params.id));
+// PUT /shows/:id
+app.put('/shows/:id', async (req, res) => {
+    const shows = await readData('shows.json');
+    const index = shows.findIndex(s => s.id === Number(req.params.id));
     
     if (index !== -1) {
-        const updatedReader = {
+        const updatedShow = {
             id: Number(req.params.id),
-            name: req.body.name || readers[index].name,
-            membershipActive: typeof req.body.membershipActive === 'boolean' ? req.body.membershipActive : readers[index].membershipActive,
-            registeredAt: req.body.registeredAt || readers[index].registeredAt,
-            borrowedBooks: Array.isArray(req.body.borrowedBooks) ? req.body.borrowedBooks : readers[index].borrowedBooks
+            title: req.body.title || shows[index].title,
+            durationMinutes: typeof req.body.durationMinutes === 'number' ? req.body.durationMinutes : shows[index].durationMinutes,
+            isSoldOut: typeof req.body.isSoldOut === 'boolean' ? req.body.isSoldOut : shows[index].isSoldOut,
+            premiereDate: req.body.premiereDate || shows[index].premiereDate,
+            performers: Array.isArray(req.body.performers) ? req.body.performers : shows[index].performers
         };
-        readers[index] = updatedReader;
-        await writeData('readers.json', readers);
-        res.json(updatedReader);
+        shows[index] = updatedShow;
+        await writeData('shows.json', shows);
+        res.json(updatedShow);
     } else {
-        res.status(404).json({ error: 'Reader not found' });
+        res.status(404).json({ error: 'Show not found' });
     }
 });
 
-// PATCH /readers/:id
-app.patch('/readers/:id', async (req, res) => {
-    const readers = await readData('readers.json');
-    const index = readers.findIndex(r => r.id === Number(req.params.id));
+// PATCH /shows/:id
+app.patch('/shows/:id', async (req, res) => {
+    const shows = await readData('shows.json');
+    const index = shows.findIndex(s => s.id === Number(req.params.id));
 
     if (index !== -1) {
-        const reader = readers[index];
-        const updatedReader = { ...reader, ...req.body, id: reader.id };
-        readers[index] = updatedReader;
-        await writeData('readers.json', readers);
-        res.json(updatedReader);
+        const show = shows[index];
+        const updatedShow = { ...show, ...req.body, id: show.id };
+        shows[index] = updatedShow;
+        await writeData('shows.json', shows);
+        res.json(updatedShow);
     } else {
-        res.status(404).json({ error: 'Reader not found' });
+        res.status(404).json({ error: 'Show not found' });
     }
 });
 
-// DELETE /readers/:id
-app.delete('/readers/:id', async (req, res) => {
-    let readers = await readData('readers.json');
-    const initialLength = readers.length;
-    readers = readers.filter(r => r.id !== Number(req.params.id));
+// DELETE /shows/:id
+app.delete('/shows/:id', async (req, res) => {
+    let shows = await readData('shows.json');
+    const initialLength = shows.length;
+    shows = shows.filter(s => s.id !== Number(req.params.id));
     
-    if (readers.length < initialLength) {
-        await writeData('readers.json', readers);
-        res.json({ message: 'Reader deleted' });
+    if (shows.length < initialLength) {
+        await writeData('shows.json', shows);
+        res.json({ message: 'Show deleted' });
     } else {
-        res.status(404).json({ error: 'Reader not found' });
+        res.status(404).json({ error: 'Show not found' });
     }
 });
 

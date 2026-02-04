@@ -1,294 +1,190 @@
-# Пользовательский Node.js Фреймворк - Приложение "Библиотека"
+# Пользовательский Node.js Фреймворк - Приложение "Цирк"
 
-Это минималистичный веб-фреймворк для Node.js, аналогичный Express, реализующий Систему Управления Библиотекой (Вариант 5).
+Это минималистичный веб-фреймворк для Node.js, аналогичный Express, реализующий Систему Управления Цирком (Вариант 10).
 
 ## Сущности
 
-### Книга
-Хранится в `data/books.json`.
+### Артист (Artist)
+Хранится в `data/artists.json`.
 Структура:
 - `id`: number (Уникальный идентификатор)
-- `title`: string (Название книги)
-- `author`: string (Имя автора)
-- `isAvailable`: boolean (Статус доступности)
-- `publishedAt`: Date string (Дата публикации в формате ISO 8601)
-- `tags`: Array<string> (Жанры или теги)
+- `name`: string (Имя артиста)
+- `actType`: string (Тип номера, например, "Клоун", "Акробат")
+- `isFullTime`: boolean (Работает ли на полную ставку)
+- `hiredAt`: Date string (Дата найма)
+- `skills`: Array<string> (Навыки)
 
-### Читатель
-Хранится в `data/readers.json`.
+### Представление (Show)
+Хранится в `data/shows.json`.
 Структура:
 - `id`: number (Уникальный идентификатор)
-- `name`: string (Имя читателя)
-- `membershipActive`: boolean (Статус членства)
-- `registeredAt`: Date string (Дата регистрации)
-- `borrowedBooks`: Array<number> (ID заимствованных книг)
+- `title`: string (Название представления)
+- `durationMinutes`: number (Длительность в минутах)
+- `isSoldOut`: boolean (Распроданы ли билеты)
+- `premiereDate`: Date string (Дата премьеры)
+- `performers`: Array<number> (ID участвующих артистов)
 
 ## Маршрутизация API
 
-### Книги
+### Артисты
 
-#### `GET /books`
-- **Описание**: Получить список всех книг.
+#### `GET /artists`
+- **Описание**: Получить список всех артистов.
 - **Параметры запроса**: Нет.
 - **Пример ответа (200 OK)**:
   ```json
   [
     {
       "id": 1,
-      "title": "The Great Gatsby",
-      "author": "F. Scott Fitzgerald",
-      "isAvailable": true,
-      "publishedAt": "1925-04-10T00:00:00.000Z",
-      "tags": ["classic", "novel"]
+      "name": "Oleg Popov",
+      "actType": "Clown",
+      "isFullTime": true,
+      "hiredAt": "2020-05-10T00:00:00.000Z",
+      "skills": ["juggling", "comedy"]
     }
   ]
   ```
 
-#### `GET /books/:id`
-- **Описание**: Получить конкретную книгу по ее ID.
+#### `GET /artists/:id`
+- **Описание**: Получить конкретного артиста по его ID.
 - **Параметры запроса**: 
-  - `id`: number (в пути) - Уникальный идентификатор книги.
+  - `id`: number (в пути) - Уникальный идентификатор артиста.
 - **Пример ответа (200 OK)**:
   ```json
   {
     "id": 1,
-    "title": "The Great Gatsby",
-    "author": "F. Scott Fitzgerald",
-    "isAvailable": true,
-    "publishedAt": "1925-04-10T00:00:00.000Z",
-    "tags": ["classic", "novel"]
+    "name": "Oleg Popov",
+    "actType": "Clown",
+    "isFullTime": true,
+    "hiredAt": "2020-05-10T00:00:00.000Z",
+    "skills": ["juggling", "comedy"]
   }
   ```
 - **Пример ответа (404 Not Found)**:
   ```json
-  { "error": "Book not found" }
+  { "error": "Artist not found" }
   ```
 
-#### `POST /books`
-- **Описание**: Создать новую книгу.
+#### `POST /artists`
+- **Описание**: Создать нового артиста.
 - **Тело запроса (application/json)**:
   ```json
   {
-    "title": "Новая книга",
-    "author": "Автор новой книги",
-    "isAvailable": true,
-    "publishedAt": "2023-01-01T00:00:00.000Z",
-    "tags": ["фантастика", "приключения"]
+    "name": "New Artist",
+    "actType": "Juggler",
+    "isFullTime": false,
+    "hiredAt": "2023-01-01T00:00:00.000Z",
+    "skills": ["balls", "clubs"]
   }
   ```
 - **Пример ответа (201 Created)**:
   ```json
   {
     "id": 3,
-    "title": "Новая книга",
-    "author": "Автор новой книги",
-    "isAvailable": true,
-    "publishedAt": "2023-01-01T00:00:00.000Z",
-    "tags": ["фантастика", "приключения"]
+    "name": "New Artist",
+    "actType": "Juggler",
+    "isFullTime": false,
+    "hiredAt": "2023-01-01T00:00:00.000Z",
+    "skills": ["balls", "clubs"]
   }
   ```
-- **Пример ответа (400 Bad Request)**:
-  ```json
-  { "error": "Invalid JSON" }
-  ```
 
-#### `PUT /books/:id`
-- **Описание**: Полностью обновить существующую книгу по ее ID. Требуется передать все поля книги.
+#### `PUT /artists/:id`
+- **Описание**: Полностью обновить существующего артиста по его ID.
 - **Параметры запроса**: 
-  - `id`: number (в пути) - Уникальный идентификатор книги.
+  - `id`: number (в пути) - Уникальный идентификатор артиста.
 - **Тело запроса (application/json)**:
   ```json
   {
-    "title": "Обновленное название",
-    "author": "Обновленный автор",
-    "isAvailable": false,
-    "publishedAt": "2024-05-15T00:00:00.000Z",
-    "tags": ["триллер"]
+    "name": "Updated Name",
+    "actType": "Senior Juggler",
+    "isFullTime": true,
+    "hiredAt": "2023-01-01T00:00:00.000Z",
+    "skills": ["fire juggling"]
   }
   ```
 - **Пример ответа (200 OK)**:
   ```json
   {
-    "id": 1,
-    "title": "Обновленное название",
-    "author": "Обновленный автор",
-    "isAvailable": false,
-    "publishedAt": "2024-05-15T00:00:00.000Z",
-    "tags": ["триллер"]
+    "id": 3,
+    "name": "Updated Name",
+    "actType": "Senior Juggler",
+    "isFullTime": true,
+    "hiredAt": "2023-01-01T00:00:00.000Z",
+    "skills": ["fire juggling"]
   }
   ```
-- **Пример ответа (404 Not Found)**:
-  ```json
-  { "error": "Book not found" }
-  ```
 
-#### `PATCH /books/:id`
-- **Описание**: Частично обновить существующую книгу по ее ID. Передаются только те поля, которые нужно изменить.
+#### `PATCH /artists/:id`
+- **Описание**: Частично обновить существующего артиста по его ID.
 - **Параметры запроса**: 
-  - `id`: number (в пути) - Уникальный идентификатор книги.
+  - `id`: number (в пути) - Уникальный идентификатор артиста.
 - **Тело запроса (application/json)**:
   ```json
   {
-    "isAvailable": false
+    "isFullTime": true
   }
-  ```
-- **Пример ответа (200 OK)**:
-  ```json
-  {
-    "id": 1,
-    "title": "The Great Gatsby",
-    "author": "F. Scott Fitzgerald",
-    "isAvailable": false,
-    "publishedAt": "1925-04-10T00:00:00.000Z",
-    "tags": ["classic", "novel"]
-  }
-  ```
-- **Пример ответа (404 Not Found)**:
-  ```json
-  { "error": "Book not found" }
   ```
 
-#### `DELETE /books/:id`
-- **Описание**: Удалить книгу по ее ID.
+#### `DELETE /artists/:id`
+- **Описание**: Удалить артиста по его ID.
 - **Параметры запроса**: 
-  - `id`: number (в пути) - Уникальный идентификатор книги.
+  - `id`: number (в пути) - Уникальный идентификатор артиста.
 - **Пример ответа (200 OK)**:
   ```json
-  { "message": "Book deleted" }
-  ```
-- **Пример ответа (404 Not Found)**:
-  ```json
-  { "error": "Book not found" }
+  { "message": "Artist deleted" }
   ```
 
-### Читатели
+### Представления (Shows)
 
-#### `GET /readers`
-- **Описание**: Получить список всех читателей.
-- **Параметры запроса**: Нет.
+#### `GET /shows`
+- **Описание**: Получить список всех представлений.
 - **Пример ответа (200 OK)**:
   ```json
   [
     {
       "id": 1,
-      "name": "Alice Smith",
-      "membershipActive": true,
-      "registeredAt": "2023-01-15T10:30:00.000Z",
-      "borrowedBooks": [2]
+      "title": "Grand Premiere",
+      "durationMinutes": 120,
+      "isSoldOut": false,
+      "premiereDate": "2023-01-20T18:00:00.000Z",
+      "performers": [1, 2]
     }
   ]
   ```
 
-#### `GET /readers/:id`
-- **Описание**: Получить конкретного читателя по его ID.
+#### `GET /shows/:id`
+- **Описание**: Получить конкретное представление по его ID.
 - **Параметры запроса**: 
-  - `id`: number (в пути) - Уникальный идентификатор читателя.
-- **Пример ответа (200 OK)**:
-  ```json
-  {
-    "id": 1,
-    "name": "Alice Smith",
-    "membershipActive": true,
-    "registeredAt": "2023-01-15T10:30:00.000Z",
-    "borrowedBooks": [2]
-  }
-  ```
-- **Пример ответа (404 Not Found)**:
-  ```json
-  { "error": "Reader not found" }
-  ```
+  - `id`: number (в пути) - Уникальный идентификатор представления.
 
-#### `POST /readers`
-- **Описание**: Создать нового читателя.
+#### `POST /shows`
+- **Описание**: Создать новое представление.
 - **Тело запроса (application/json)**:
   ```json
   {
-    "name": "Новый читатель",
-    "membershipActive": true,
-    "registeredAt": "2024-01-01T12:00:00.000Z",
-    "borrowedBooks": []
+    "title": "New Show",
+    "durationMinutes": 90,
+    "isSoldOut": false,
+    "premiereDate": "2023-12-01T20:00:00.000Z",
+    "performers": []
   }
-  ```
-- **Пример ответа (201 Created)**:
-  ```json
-  {
-    "id": 3,
-    "name": "Новый читатель",
-    "membershipActive": true,
-    "registeredAt": "2024-01-01T12:00:00.000Z",
-    "borrowedBooks": []
-  }
-  ```
-- **Пример ответа (400 Bad Request)**:
-  ```json
-  { "error": "Invalid JSON" }
   ```
 
-#### `PUT /readers/:id`
-- **Описание**: Полностью обновить существующего читателя по его ID. Требуется передать все поля читателя.
+#### `PUT /shows/:id`
+- **Описание**: Полностью обновить существующее представление.
 - **Параметры запроса**: 
-  - `id`: number (в пути) - Уникальный идентификатор читателя.
-- **Тело запроса (application/json)**:
-  ```json
-  {
-    "name": "Обновленное имя",
-    "membershipActive": false,
-    "registeredAt": "2023-02-01T10:00:00.000Z",
-    "borrowedBooks": [1]
-  }
-  ```
-- **Пример ответа (200 OK)**:
-  ```json
-  {
-    "id": 1,
-    "name": "Обновленное имя",
-    "membershipActive": false,
-    "registeredAt": "2023-02-01T10:00:00.000Z",
-    "borrowedBooks": [1]
-  }
-  ```
-- **Пример ответа (404 Not Found)**:
-  ```json
-  { "error": "Reader not found" }
-  ```
+  - `id`: number (в пути) - Уникальный идентификатор представления.
 
-#### `PATCH /readers/:id`
-- **Описание**: Частично обновить существующего читателя по его ID. Передаются только те поля, которые нужно изменить.
+#### `PATCH /shows/:id`
+- **Описание**: Частично обновить существующее представление.
 - **Параметры запроса**: 
-  - `id`: number (в пути) - Уникальный идентификатор читателя.
-- **Тело запроса (application/json)**:
-  ```json
-  {
-    "membershipActive": false
-  }
-  ```
-- **Пример ответа (200 OK)**:
-  ```json
-  {
-    "id": 1,
-    "name": "Alice Smith",
-    "membershipActive": false,
-    "registeredAt": "2023-01-15T10:30:00.000Z",
-    "borrowedBooks": [2]
-  }
-  ```
-- **Пример ответа (404 Not Found)**:
-  ```json
-  { "error": "Reader not found" }
-  ```
+  - `id`: number (в пути) - Уникальный идентификатор представления.
 
-#### `DELETE /readers/:id`
-- **Описание**: Удалить читателя по его ID.
+#### `DELETE /shows/:id`
+- **Описание**: Удалить представление по его ID.
 - **Параметры запроса**: 
-  - `id`: number (в пути) - Уникальный идентификатор читателя.
-- **Пример ответа (200 OK)**:
-  ```json
-  { "message": "Reader deleted" }
-  ```
-- **Пример ответа (404 Not Found)**:
-  ```json
-  { "error": "Reader not found" }
-  ```
+  - `id`: number (в пути) - Уникальный идентификатор представления.
 
 ## Запуск приложения
 

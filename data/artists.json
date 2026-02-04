@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Oleg Popov",
+    "actType": "Clown",
+    "isFullTime": true,
+    "hiredAt": "2020-05-10T00:00:00.000Z",
+    "skills": ["juggling", "comedy"]
+  },
+  {
+    "id": 2,
+    "name": "Flying Graysons",
+    "actType": "Acrobat",
+    "isFullTime": true,
+    "hiredAt": "2021-08-15T00:00:00.000Z",
+    "skills": ["trapeze", "gymnastics"]
+  }
+]
